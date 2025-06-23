@@ -37,7 +37,6 @@ exports.getBookByID = async (id) => {
   return book;
 };
 
-// Delete book
 exports.deleteBook = async (id) => {
   const [deletedBook] = await sql`
     DELETE FROM books WHERE id = ${id} RETURNING *;

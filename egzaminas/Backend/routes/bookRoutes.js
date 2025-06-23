@@ -17,11 +17,6 @@ const {
 
 const router = express.Router();
 
-router
-  .route('/')
-  .post(protect, allowAccessTo('admin'), validateNewBook, validate, createBook)
-  .get(getBooks);
-
 router.get('/filter', getFilteredBooks);
 
 router

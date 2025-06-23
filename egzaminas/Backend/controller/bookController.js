@@ -1,5 +1,5 @@
 const { sql } = require('../dbConnection');
-const { createBook, getAllBooks, getBookByID, getBookByCategory, updateBookPart, filterBooks } = require('../models/bookModel');
+const { createBook, getAllBooks, getBookByID, updateBookPart, filterBooks } = require('../models/bookModel');
 const { reserveBook, deleteReservation, getReservationsByUser, extendReservation } = require('../models/bookRegistrationModel');
 const AppError = require('../utils/appError');
 

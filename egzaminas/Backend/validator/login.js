@@ -2,7 +2,6 @@ const { body } = require('express-validator')
 
 const argon2 = require('argon2');
 const { getUserByEmail } = require('../models/userModel');
-const { login } = require('../controller/authController');
 
 const validateLogin = [
     body('email')

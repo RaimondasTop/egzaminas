@@ -14,23 +14,7 @@ app.use(cors({
 }));
 
 app.use(express.json());
-
 app.use(cookieParser());
-
-app.use((req, res, next) => {
-    req.requestTime = new Date().toISOString();
-    next();
-});
-
-app.use((req, res, next) =>{
-    console.log("Hello from mid");
-    next();
-});
-
-app.use((req, res, next) =>{
-    console.log(req.requestTime);
-    next();
-});
 
 app.use('/api/v1/books', bookRouter);
 app.use('/api/v1/auth', authRouter);
@@ -50,18 +34,6 @@ app.use((err, req, res, next) => {
     res.status(statusCode).json({
         status: status,
         message: message,
-    });
-});
-
-app.use((err, req, res, next) => {
-    const errMessage = err.message || "Internal server Error";
-    const statusCode = err.statusCode || 500;
-    const errStatus = err.status || "error";
-  
-    res.status(statusCode).json({
-      status: errStatus,
-      message: errMessage,
-      stack: err.stack,
     });
 });
 
