@@ -68,12 +68,10 @@ exports.getUserByEmail = async (email) => {
     const [user] = await sql`
         SELECT id, username, email, password, role
         FROM users
-        WHERE email = ${email}
+        WHERE LOWER(email) = ${email.toLowerCase()}
     `;
-
     if (!user) {
         throw new Error("User not found");
     }
-
     return user;
 }

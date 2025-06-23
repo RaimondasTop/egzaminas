@@ -45,7 +45,7 @@ export default function UserReservations({ refresh, setRefresh }) {
       if (res.ok) {
         setRefresh((r) => r + 1);
       } else {
-        alert("Klaida trinant rezervaciją");
+        alert("Klaida trinant rezervacija");
       }
     } catch {
       alert("Serverio klaida trinant rezervaciją");
