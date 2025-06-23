@@ -1,5 +1,7 @@
 const express = require('express');
-const tourRouter = require('./routes/tourRoutes');
+const bookRouter = require('./routes/bookRoutes');
+const categoriesRouter = require('./routes/categoriesRoutes.js');
+const authRouter = require('./routes/authRoutes');
 const userRouter = require('./routes/userRoutes');
 const AppError = require("./utils/appError");
 const cookieParser = require('cookie-parser');
@@ -7,15 +9,14 @@ const app = express();
 const cors = require('cors');
 
 app.use(cors({
-  origin: 'http://localhost:5173', // arba jūsų fronto adresas
+  origin: 'http://localhost:5173',
   credentials: true
 }));
 
-//body parer req.body
 app.use(express.json());
 
 app.use(cookieParser());
-//middleware
+
 app.use((req, res, next) => {
     req.requestTime = new Date().toISOString();
     next();
@@ -31,10 +32,10 @@ app.use((req, res, next) =>{
     next();
 });
 
-
-app.use('/api/v1/tours', tourRouter);
+app.use('/api/v1/books', bookRouter);
+app.use('/api/v1/auth', authRouter);
+app.use('/api/v1/categories', categoriesRouter);
 app.use('/api/v1/users', userRouter);
-
 
 app.all(/(.*)/, (req, res, next) => {
     const err = new AppError(`Can't find ${req.originalUrl} on this server!`, 404);
@@ -63,6 +64,5 @@ app.use((err, req, res, next) => {
       stack: err.stack,
     });
 });
-
 
 module.exports = app;

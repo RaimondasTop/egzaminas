@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-export default function Login({ onClose, onLoginSuccess }) {
+export default function Login({ onClose, onLoginSuccess, onRegisterClick }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -9,7 +9,7 @@ export default function Login({ onClose, onLoginSuccess }) {
     e.preventDefault();
     setError('');
     try {
-      const response = await fetch('http://localhost:3000/api/v1/users/login', {
+      const response = await fetch('http://localhost:3000/api/v1/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
@@ -56,6 +56,13 @@ export default function Login({ onClose, onLoginSuccess }) {
           {error && <div className="text-red-500 text-sm text-center">{error}</div>}
           <button type="submit" className="bg-blue-500 text-white rounded px-4 py-2 hover:bg-blue-600 transition">Prisijungti</button>
           <button type="button" onClick={onClose} className="text-gray-500 hover:underline text-sm mt-2">Uždaryti</button>
+          <button
+            type="button"
+            onClick={onRegisterClick}
+            className="text-blue-600 hover:underline text-sm mt-2"
+          >
+            Neturite paskyros? Registruotis
+          </button>
         </form>
       </div>
     </div>

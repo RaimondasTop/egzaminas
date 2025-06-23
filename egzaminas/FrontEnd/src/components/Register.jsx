@@ -15,7 +15,7 @@ export default function Register({ onClose, onRegisterSuccess }) {
       return;
     }
     try {
-      const response = await fetch('http://localhost:3000/api/v1/users/signup', {
+      const response = await fetch('http://localhost:3000/api/v1/auth/signup', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',

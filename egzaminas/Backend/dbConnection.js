@@ -9,7 +9,6 @@ const sql = postgres({
     password: process.env.DB_PASS
 });
 
-// Test connection
 const testConnection = async () => {
     try {
         await sql`SELECT 1 AS result`;

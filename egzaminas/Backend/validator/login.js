@@ -7,7 +7,7 @@ const { login } = require('../controller/authController');
 const validateLogin = [
     body('email')
     .notEmpty()
-    .withMessage("Emailo reikia jopapa")
+    .withMessage("Emailo reikia")
     .isEmail()
     .withMessage('Netinkamas email')
     .normalizeEmail()
@@ -21,7 +21,7 @@ const validateLogin = [
     }),
     body('password')
     .notEmpty()
-    .withMessage("passwordo reikia jopapa")
+    .withMessage("passwordo reikia")
     .custom(async(value, {req}) =>{
         const user = await getUserByEmail(req.body.email);
         if(user){

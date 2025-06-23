@@ -12,7 +12,7 @@ const validate = (req, res, next) => {
         return next(new AppError(errorsString, 400));
     }
 
-    next(); // 👈 BŪTINAS jei nėra klaidų
+    next();
 };
 
 module.exports = validate;

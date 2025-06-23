@@ -1,41 +1,26 @@
 const { body } = require('express-validator');
 const { getUserByEmail } = require('../models/userModel');
 
-const validateNewUser = [
-    // Check if body is not empty
-    body().notEmpty().withMessage('User body must contain data'),
-
-    body('email')
-    .notEmpty()
-    .withMessage('Email is required')
-    .isEmail()
-    .withMessage('Email is invalid')
-    .normalizeEmail() // Sanitize email address
-    .custom(async (value) => {
-       const user = await getUserByEmail(value); // Query the database
-        if (user) {
-        throw new Error('Email already exists');
-    }
-        return true; // Validation passed
+module.exports = [
+  body('username')
+    .notEmpty().withMessage('Username is required')
+    .isLength({ min: 3, max: 30 }).withMessage('Username must be 3-30 characters'),
+  body('email')
+    .notEmpty().withMessage('Email is required')
+    .isEmail().withMessage('Invalid email')
+    .custom(async (email) => {
+      try {
+        await getUserByEmail(email);
+        throw new Error('Email already in use');
+      } catch (err) {
+        return true;
+      }
     }),
-
-body('username').notEmpty().withMessage('Username is required'),
-
-body('password')
-    .notEmpty()
-    .withMessage('Password is required')
-    // .isLength({ min: 8 })
-    // .withMessage('Password must be at least 8 characters')
-   // .matches(/^( ?=.* \d)( ?=.* [a-z])( ?=.* [A-Z]). {8, }$/)
-    // Custom validation to check if passwords match,
-    .custom(async (value, { req }) => {
-        if (value !== req.body.passwordconfirm) {
-        throw new Error(
-            'Password and password confirmation do not match. Please try again.'
-        );
-        }
-        return true; // Validation passed
-    }),
+  body('password')
+    .notEmpty().withMessage('Password is required')
+    .isLength({ min: 6 }).withMessage('Password must be at least 6 characters'),
+  body('passwordconfirm')
+    .notEmpty().withMessage('Password confirmation is required')
+    .custom((value, { req }) => value === req.body.password)
+    .withMessage('Passwords do not match'),
 ];
-
-module.exports = validateNewUser;

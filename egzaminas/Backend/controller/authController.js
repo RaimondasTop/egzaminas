@@ -16,15 +16,19 @@ const sendTokenCookie = (token, res) => {
     res.cookie('jwt', token, cookieOptions);
 };
 
-// User signup
 exports.signup = async (req, res, next) => {
     try {
-        const newUser = req.body;
-        const hash = await argon2.hash(newUser.password);
+        const { username, email, password, role } = req.body;
+        const hash = await argon2.hash(password);
 
-        newUser.password = hash;
+        const userToCreate = {
+            username,
+            email,
+            password: hash,
+            role: role || "user"
+        };
 
-        const createdUser = await createUser(newUser);
+        const createdUser = await createUser(userToCreate);
 
         if (!createdUser) {
             return next(new AppError("User not created", 400));
@@ -33,9 +37,8 @@ exports.signup = async (req, res, next) => {
         const token = signToken(createdUser.id);
 
         sendTokenCookie(token, res);
-        
-        // Remove password before sending back to client
-        const { password, ...userWithoutPassword } = createdUser;
+
+        const { password: pw, ...userWithoutPassword } = createdUser;
 
         res.status(201).json({
             status: "success",
@@ -51,23 +54,19 @@ exports.login = async (req, res, next) => {
     try {
         const { email, password } = req.body;
 
-        // Gauk vartotoją pagal el. paštą
         const user = await getUserByEmail(email);
         if (!user) {
             return next(new AppError("User not found", 404));
         }
 
-        // Tikrink slaptažodį
         const isPasswordCorrect = await argon2.verify(user.password, password);
         if (!isPasswordCorrect) {
             return next(new AppError("Incorrect password", 401));
         }
 
-        // Generuok tokeną
         const token = signToken(user.id);
         sendTokenCookie(token, res);
 
-        // Pašalink slaptažodį iš atsakymo
         user.password = undefined;
 
         res.status(200).json({
@@ -96,7 +95,6 @@ exports.protect = async (req, res, next) => {
 
     console.log(decoded);
 
-//check if user still exists
 const currentUser = await getUserById(decoded.id);
 if (!currentUser) {
     return next(

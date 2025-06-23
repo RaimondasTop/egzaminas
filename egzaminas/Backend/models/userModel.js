@@ -1,25 +1,79 @@
 const { sql } = require("../dbConnection");
 
 
-exports.getUserByEmail = async (email) =>{
-
+exports.createUser = async (newUser) => {
+    const userData = {};
+    for (const key of ['username', 'email', 'password', 'role']) {
+        if (newUser[key] !== undefined) userData[key] = newUser[key];
+    }
     const [user] = await sql`
-    SELECT * FROM users WHERE users.email = ${email}
+        INSERT INTO users ${sql(userData, 'username','email','password', 'role')}
+        RETURNING *
     `;
     return user;
 };
 
-exports.createUser = async (newUser) =>{
-    const [user] = await sql`
-    INSERT INTO users  ${sql(newUser, 'username','email','password')}
-    RETURNING *
+exports.deleteUser = async (id) => {
+    const [deletedUser] = await sql`
+        DELETE FROM users
+        WHERE id = ${id}
+        RETURNING *;
     `;
+
+    if (!deletedUser) {
+        throw new Error("User not found");
+    }
+
+    return deletedUser;
+}
+
+exports.getUsers = async () => {
+    const users = await sql`
+        SELECT id, username, email, role
+        FROM users
+    `;
+    return users;
+}
+
+exports.editUser = async (id, updatedUser) => {
+    const [user] = await sql`
+        UPDATE users
+        SET ${sql(updatedUser, 'username', 'email', 'role')}
+        WHERE id = ${id}
+        RETURNING *;
+    `;
+
+    if (!user) {
+        throw new Error("User not found");
+    }
+
     return user;
-};
+}
 
 exports.getUserById = async (id) => {
     const [user] = await sql`
-    SELECT id, username, email, role FROM users WHERE users.id = ${id}
+        SELECT id, username, email, role
+        FROM users
+        WHERE id = ${id}
     `;
+
+    if (!user) {
+        throw new Error("User not found");
+    }
+
     return user;
-};
+}
+
+exports.getUserByEmail = async (email) => {
+    const [user] = await sql`
+        SELECT id, username, email, password, role
+        FROM users
+        WHERE email = ${email}
+    `;
+
+    if (!user) {
+        throw new Error("User not found");
+    }
+
+    return user;
+}
