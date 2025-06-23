@@ -93,13 +93,13 @@ export default function UserReservations({ refresh, setRefresh }) {
         }
       );
       if (res.ok) {
-        setExtendMsg((m) => ({ ...m, [reservationId]: "Pratęsta!" }));
+        setExtendMsg((m) => ({ ...m, [reservationId]: "Pratesta!" }));
         setRefresh((r) => r + 1);
       } else {
         const data = await res.json();
         setExtendMsg((m) => ({
           ...m,
-          [reservationId]: data.message || "Klaida pratęsiant",
+          [reservationId]: data.message || "Klaida pratesiant",
         }));
       }
     } catch {
@@ -160,7 +160,11 @@ export default function UserReservations({ refresh, setRefresh }) {
                     </label>
                     <input
                       type="date"
-                      min={minDate}
+                      min={
+                        r.return_date
+                          ? new Date(r.return_date).toISOString().split("T")[0]
+                          : minDate
+                      }
                       max={maxDate}
                       value={extendDate[r.reservation_id] || ""}
                       onChange={(e) =>
